@@ -24,4 +24,3 @@ sequelize.sync().then(function(){
 		};
 	});
 });
-
