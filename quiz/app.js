@@ -23,6 +23,12 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use (function (req, res, next) {
+	app.locals.contAciertos = (app.locals.contAciertos || 0);
+	app.locals.contFallos = (app.locals.contFallos || 0);
+	next();
+});
+
 app.use('/', routes);
 
 // catch 404 and forward to error handler
@@ -55,6 +61,5 @@ app.use(function(err, req, res, next) {
     error: {}
   });
 });
-
 
 module.exports = app;
