@@ -20,14 +20,9 @@ app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded());
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-
-app.use (function (req, res, next) {
-	app.locals.contAciertos = (app.locals.contAciertos || 0);
-	app.locals.contFallos = (app.locals.contFallos || 0);
-	next();
-});
 
 app.use('/', routes);
 
@@ -61,5 +56,6 @@ app.use(function(err, req, res, next) {
     error: {}
   });
 });
+
 
 module.exports = app;
