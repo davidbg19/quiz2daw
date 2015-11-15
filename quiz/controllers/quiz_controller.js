@@ -13,7 +13,6 @@ exports.load = function(req, res, next, quizId) {
 	).catch(function(error) { next(error);});
 };
 
-
 // GET /quizes
 exports.index = function(req, res) {
 	models.Quiz.findAll().then(
@@ -27,13 +26,10 @@ exports.show = function(req, res) {
     res.render('quizes/show', {quiz: req.quiz});
 };
 
-<<<<<<< HEAD
-=======
 
 
 
 // GET /quizes/:id/answer
->>>>>>> 9a7f6282a951cbb66bf4940b005a31c494b2d610
 exports.answer = function(req, res) {
 
 	var resultado = 'Incorrecto';

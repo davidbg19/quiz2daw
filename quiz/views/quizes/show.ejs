@@ -10,10 +10,6 @@
 <p><strong>Comentarios:</strong></p>
 
 <%for(index in quiz.Comments){%>
-<<<<<<< HEAD
-<p>- <%=quiz.Comments[index].texto%></p>
-<%}%>
-=======
 	<%if(quiz.Comments[index].publicado || session.user) {%>
 		<p>- <%=quiz.Comments[index].texto%></p>
 		<%if(!quiz.Comments[index].publicado && session.user) {%>
@@ -23,4 +19,3 @@
 	<%}%>
 <%}%>
 
->>>>>>> 9a7f6282a951cbb66bf4940b005a31c494b2d610
