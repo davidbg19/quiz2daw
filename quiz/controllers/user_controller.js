@@ -19,15 +19,17 @@ exports.load = function(req, res, next, userId) {
 };
 
 // Autenticar con la base de datos de usuarios
-exports.autenticar = function(login, pass, callback){
+exports.autenticar = function(login, pass, callback) {
 	models.User.find({
-			where: {username: login, password: pass}
-		}).then(function(user){
-			if(user){
+            where: { username: login, password: pass }
+        }).then(function(user) {
+				if(user) {
 				callback(null, user);
-			}else{callback(new Error('Error al introducir los datos'));}
+			} else {
+				callback(new Error('Nombre de usuario o contraseña incorrecta.'));
+			}
 		}
-	).catch(function(error){ next(error)});
+	).catch(function(error){ callback(new Error('Error al introducir los datos'));});
 };
 
 
@@ -45,6 +47,23 @@ exports.edit=function(req,res){
     res.render('users/edit', {user : user});
 };
 
+exports.miPerfil=function(req,res){
+	models.User.find({
+		where : {
+			id : Number(req.session.user.id)
+		},
+	}).then(function(user) {
+		if (user) {
+			res.render('users/miPerfil', {user : user});
+		} else {
+			res.redirect('/');
+		}
+	}).catch(function(error) {
+		res.redirect('/miPerfil'); // TODO lanzar error
+	});
+    
+};
+
 exports.update=function(req,res){
     req.user.username = req.body.user.username;
     req.user.password = req.body.user.password;
@@ -58,17 +77,52 @@ exports.update=function(req,res){
             }else  {
                 req.user
                         .save({fields:["username", "password"]})
-                        .then(function(){res.redirect('/users/');});
+                        .then(function(){res.redirect('/admin/users/');});
             }
         }
     );
+};
+
+exports.updateMiPerfil=function(req,res){
+	models.User.find({
+		where : {
+			id : Number(req.session.user.id)
+		},
+	}).then(function(user) {
+		if (user) {
+			user.username = req.body.user.username;
+			user.password = req.body.user.password;
+			
+			user
+					.validate()
+					.then(
+					function(err){
+						if(err){
+						res.render('users/miPerfil', {user: req.user, errors: err.errors});
+					}else  {
+						user
+								.save({fields:["username", "password"]})
+								.then(function(){
+									req.session.user.username = user.username;
+									res.redirect('/miPerfil');
+									});
+					}
+				}
+    );
+		} else {
+			res.redirect('/');
+		}
+	}).catch(function(error) {
+		res.redirect('/miPerfil'); // TODO lanzar error
+	});
+
 };
 
 //Elimina users
 
 exports.destroy = function(req, res) {
 	req.user.destroy().then(function() {
-		res.redirect('/users');
+		res.redirect('/admin/users');
 	}).catch(function(error) {
 		next(error)
 	});
